@@ -3,6 +3,7 @@ import { createFile } from "files" under fs;
 import { print } from "String" under str;
 import { createLoadingBar } from "./src/modules/LoadingBar" under lb;
 import { sqrt } from "math" under math;
+import { circle, line, greater } from "./src/Shapes" under shape;
 
 import ArgsList from "CLArgs";
 import File from "files";
@@ -11,24 +12,6 @@ import string from "String";
 import LoadingBar from "./src/modules/LoadingBar";
 import Color, Texture from "./src/Color";
 import Position from "./src/Position";
-
-bool circle(int x, int y, int radius, * Position pos) {
-	int a = if pos != NULL pos.x else 0;
-	int b = if pos != NULL pos.y else 0;
-	return ((x - a) * (x - a)) + ((y - b) * (y - b)) <= radius * radius;
-};
-
-bool line( int x, int y, int m, * int b) {
-	return y == (m * x + b);
-};
-
-bool less(int x, int y, int m, * int b) {
-	return y < (m * x + b);
-};
-
-bool greater(int x, int y, int m, * int b) {
-	return y > (m * x + b);
-};
 
 int main(int argc, adr argv) {
 	let args = ArgsList(argc, argv, {
@@ -97,11 +80,11 @@ int main(int argc, adr argv) {
 				c.init(b, g, r);
 			});
 
-			if circle(x, y, height / 4, Position(width / 2, height / 2))
+			if shape.circle(x, y, height / 4, Position(width / 2, height / 2))
 				file.writeBytes(texture.parse(x, y), Color)
-			else if greater(x, y, 1)
+			else if shape.greater(x, y, 1)
 				file.writeBytes(xredGradiant.parse(x, y), Color)
-			else if circle(x, y, height / 2, Position(width / 2, height / 2))
+			else if shape.circle(x, y, height / 2, Position(width / 2, height / 2))
 				file.writeBytes(inverted.parse(x, y), 3)
 			else
 				file.writeBytes(yredGradiant.parse(x, y), Color);

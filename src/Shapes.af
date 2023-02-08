@@ -1,0 +1,22 @@
+// Please add more shape functions in this file
+.needs <std>
+
+import Position from "./src/Position";
+
+export bool circle(int x, int y, int radius, * Position pos) {
+	int a = if pos != NULL pos.x else 0;
+	int b = if pos != NULL pos.y else 0;
+	return ((x - a) * (x - a)) + ((y - b) * (y - b)) <= radius * radius;
+};
+
+export bool line( int x, int y, int m, * int b) {
+	return y == (m * x + b);
+};
+
+export bool less(int x, int y, int m, * int b) {
+	return y < (m * x + b);
+};
+
+export bool greater(int x, int y, int m, * int b) {
+	return y > (m * x + b);
+};
