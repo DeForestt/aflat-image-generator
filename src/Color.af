@@ -1,5 +1,6 @@
 .needs <std>
 
+// converts an int to a byte
 private byte intToByte(int i) {
 	if (i > 255) | (i < 0) panic("Invalid byte value");
 	byte[4] b;
@@ -7,7 +8,7 @@ private byte intToByte(int i) {
 	return b[0];
 };
 
-
+// a static color class
 class Color {
 
     contract {
@@ -24,6 +25,7 @@ class Color {
     };
 };
 
+// The Texture sets its colors by calling some callback function
 class Texture signs Color {
     // contains a pointer to a function that sets its colors;
     adr setColors = setColors;
