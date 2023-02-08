@@ -1,0 +1,10 @@
+.needs <std>;
+
+class Position {
+    public int x = x;
+    public int y = y;
+
+    public Position init(int x, int y) {
+        return my;
+    };
+};

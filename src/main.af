@@ -1,0 +1,115 @@
+.needs <std>
+import { createFile } from "files" under fs;
+import { print } from "String" under str;
+import { createLoadingBar } from "./src/modules/LoadingBar" under lb;
+import { sqrt } from "math" under math;
+
+import ArgsList from "CLArgs";
+import File from "files";
+import Product from "Utils/Product";
+import string from "String";
+import LoadingBar from "./src/modules/LoadingBar";
+import Color, Texture from "./src/Color";
+import Position from "./src/Position";
+
+bool circle(int x, int y, int radius, * Position pos) {
+	int a = if pos != NULL pos.x else 0;
+	int b = if pos != NULL pos.y else 0;
+	return ((x - a) * (x - a)) + ((y - b) * (y - b)) <= radius * radius;
+};
+
+bool line( int x, int y, int m, * int b) {
+	return y == (m * x + b);
+};
+
+bool less(int x, int y, int m, * int b) {
+	return y < (m * x + b);
+};
+
+bool greater(int x, int y, int m, * int b) {
+	return y > (m * x + b);
+};
+
+int main(int argc, adr argv) {
+	let args = ArgsList(argc, argv, {
+		"o",
+		NULL
+	});
+	string output = args.getArg("o").value([] => return `out.ppm`);
+
+	let file = fs.createFile(output.cstr());
+
+	int height = 256;
+	int width = 256;
+
+	// Create a ppm header with the given width and height
+	let header = `P6 {width} {height} 255\n`;
+
+	file.write(header.cstr());
+
+	let bar = lb.createLoadingBar(height * width);
+	bar.run();
+	for mutable int y = 0; y < height; y++ {
+		for mutable int x = 0; x < width; x++ {
+			Texture texture = Texture([Color c, int px, int py] => {
+				int r = (py) % 255;
+				int g = (px) % 255;
+				int b = ((px + py) / 2) % 255;
+				c.init(r, g, b);
+			});
+
+			Texture inverted = Texture([Color c, int px, int py] => {
+				int r = (px) % 255;
+				int g = (py) % 255;
+				int b = ((px * py) / 2) % 255;
+				c.init(r, g, b);
+			});
+
+			// Texture grid = Texture([Color c, int px, int py] => {
+			// 	if (px % 10 == 0) | (py % 10 == 0) {
+			// 		c.init(px % 255, py % 255, 0);
+			// 	} else {
+			// 		c.init(255, 255, 255);
+			// 	};
+			// });
+
+			Texture xredGradiant = Texture([Color c, int px, int py] => {
+				int dist = (px - 256 / 2) * (px - 256 / 2) + (py - 256 / 2) * (py - 256 / 2);
+				int rad = math.sqrt(dist);
+				mutable int r = 255 - (dist / 100);
+				if r < 0 r = 0
+				else if r > 255 r = 255;
+				int b = 255 - r;
+				mutable int g = 255 - rad * 2;
+				if g < 0 g = 0;
+				c.init(r, g, b);
+			});
+
+			Texture yredGradiant = Texture([Color c, int px, int py] => {
+				int dist = (px - 256 / 2) * (px - 256 / 2) + (py - 256 / 2) * (py - 256 / 2);
+				int rad = math.sqrt(dist);
+				mutable int r = 255 - (dist / 100);
+				if r < 0 r = 0
+				else if r > 255 r = 255;
+				int b = 255 - r;
+				mutable int g = 255 - rad * 2;
+				if g < 0 g = 0;
+				c.init(b, g, r);
+			});
+
+			if circle(x, y, height / 4, Position(width / 2, height / 2))
+				file.writeBytes(texture.parse(x, y), Color)
+			else if greater(x, y, 1)
+				file.writeBytes(xredGradiant.parse(x, y), Color)
+			else if circle(x, y, height / 2, Position(width / 2, height / 2))
+				file.writeBytes(inverted.parse(x, y), 3)
+			else
+				file.writeBytes(yredGradiant.parse(x, y), Color);
+
+			bar.update();
+		};
+	};
+	bar.kill();
+	file.close();
+	return 0;
+};

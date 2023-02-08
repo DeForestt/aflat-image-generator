@@ -1,0 +1,39 @@
+.needs <std>
+
+private byte intToByte(int i) {
+	if (i > 255) | (i < 0) panic("Invalid byte value");
+	byte[4] b;
+	b =: i;
+	return b[0];
+};
+
+
+class Color {
+
+    contract {
+        mutable byte r;
+        mutable byte g;
+        mutable byte b;
+    };
+
+    Color init(int r, int g, int b) {
+        my.r = intToByte(r);
+        my.g = intToByte(g);
+        my.b = intToByte(b);
+        return my;
+    };
+};
+
+class Texture signs Color {
+    // contains a pointer to a function that sets its colors;
+    adr setColors = setColors;
+
+    public Texture init(adr setColors) {
+        return my;
+    };
+
+    public Texture parse(int x, int y) {
+        my.setColors(x, y);
+        return my;
+    };
+};
