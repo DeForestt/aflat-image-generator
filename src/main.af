@@ -32,9 +32,11 @@ int main(int argc, adr argv) {
 
 	let bar = lb.createLoadingBar(height * width);
 	bar.run();
+	
+	// this runs a lot... Use heap alocation to your own peral.
 	for mutable int y = 0; y < height; y++ {
 		for mutable int x = 0; x < width; x++ {
-			Texture texture = Texture([Color c, int px, int py] => {
+			Texture texture =  new Texture([Color c, int px, int py] => {
 				int r = (py) % 255;
 				int g = (px) % 255;
 				int b = ((px + py) / 2) % 255;
@@ -47,14 +49,6 @@ int main(int argc, adr argv) {
 				int b = ((px * py) / 2) % 255;
 				c.init(r, g, b);
 			});
-
-			// Texture grid = Texture([Color c, int px, int py] => {
-			// 	if (px % 10 == 0) | (py % 10 == 0) {
-			// 		c.init(px % 255, py % 255, 0);
-			// 	} else {
-			// 		c.init(255, 255, 255);
-			// 	};
-			// });
 
 			Texture xredGradiant = Texture([Color c, int px, int py] => {
 				int dist = (px - 256 / 2) * (px - 256 / 2) + (py - 256 / 2) * (py - 256 / 2);
